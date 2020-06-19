@@ -1,0 +1,27 @@
+.App {
+  background: #eee;
+}
+
+.articles {
+  max-width: 960px;
+  width: 90%;
+  margin: auto;
+
+  h1 {
+    text-align: center;
+    display: block;
+  }
+
+  > .article {
+    background: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 2rem;
+
+    .article-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+  }
+}
