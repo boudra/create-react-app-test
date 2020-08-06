@@ -14,18 +14,20 @@ function App({ id }) {
 
   return (
     <div className="App">
-      <header className="App-header">
+      <header className="app-header">
         <h1>Articles</h1>
-        {posts.length === 0 && <p>There are no posts</p>}
+      </header>
+      <main>
+      {posts.length === 0 && <p>There are no posts</p>}
         <div className="articles">
           {posts.map((post) => (
-            <div className="article" key={post.id}>
+            <div className="article" key={post.id} role="article">
               <div className="article-title">{post.title}</div>
               <div className="article-body">{post.body}</div>
             </div>
           ))}
         </div>
-      </header>
+      </main>
     </div>
   );
 }
