@@ -15,26 +15,25 @@ import { getPosts } from "./apiService.js";
 jest.mock("./apiService");
 
 describe("App", () => {
+  const fakePosts = [
+    { id: 1, title: "first post" },
+    { id: 2, title: "second post" }
+  ];
+
+  getPosts.mockResolvedValue(fakePosts);
+
   it("renders posts", async () => {
-    let fakePosts = [
-      { id: 1, title: "first post" },
-      { id: 2, title: "second post" }
-    ];
+    render(<App />);
 
-    getPosts.mockResolvedValue(fakePosts);
+    expect(screen.getByText("There are no posts")).toBeInTheDocument();
 
-    const { getByText, getBy, queryByText } = render(<App />);
+    expect(await screen.findByText("There are no posts")).not.toBeInTheDocument();
 
-    expect(getByText("There are no posts")).toBeInTheDocument();
+    fakePosts.reduce((post) => {
+      expect(screen.getByText(post.title)).toBeInTheDocument();
+    });
 
-    // await waitForElementToBeRemoved(() => queryByText("There are no posts"));
-    //
-    // fakePosts.forEach((post) => {
-    //   expect(getByText(post.title)).toBeInTheDocument();
-    // });
-
-    await wait(() => expect(screen.getByText("first post")).toBeInTheDocument());
-    await wait(() => expect(screen.getByText("second post")).toBeInTheDocument());
+    expect(screen.getAllByRole("article")).toHaveLength(fakePosts.length);
 
     expect(getPosts).toHaveBeenCalledTimes(1);
   });
