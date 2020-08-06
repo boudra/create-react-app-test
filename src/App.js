@@ -1,26 +1,38 @@
-import React, { useEffect, useState } from "react";
 import "./App.scss";
 
-import { getPosts } from "./apiService.js";
+import React, { useEffect, useMemo, useState } from "react";
 
-function App({ id }) {
-  let [posts, setPosts] = useState([]);
+import { getPosts } from "./apiService.js";
+import SearchBar from "./SearchBar.js";
+
+function App() {
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    getPosts(id).then((posts) => {
+    getPosts().then((posts) => {
       setPosts(posts);
+      setLoading(false);
     });
   }, []);
 
-  return (
-    <div className="App">
-      <header className="app-header">
-        <h1>Articles</h1>
-      </header>
+  const filteredPosts = useMemo(() => {
+    return posts.filter(
+      (post) =>
+        post.title.includes(searchQuery) || post.body.includes(searchQuery)
+    );
+  }, [posts, searchQuery]);
+
+  function viewPosts() {
+    return (
       <main>
-      {posts.length === 0 && <p>There are no posts</p>}
+        <SearchBar query={searchQuery} onChange={setSearchQuery} />
+        {filteredPosts.length === 0 && (
+          <div className="warning">We couldn't find any articles!</div>
+        )}
         <div className="articles">
-          {posts.map((post) => (
+          {filteredPosts.map((post) => (
             <div className="article" key={post.id} role="article">
               <div className="article-title">{post.title}</div>
               <div className="article-body">{post.body}</div>
@@ -28,6 +40,15 @@ function App({ id }) {
           ))}
         </div>
       </main>
+    );
+  }
+
+  return (
+    <div className="App">
+      <header className="app-header">
+        <h1>Articles</h1>
+      </header>
+      {loading ? <p>Loading...</p> : viewPosts()}
     </div>
   );
 }

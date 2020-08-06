@@ -4,8 +4,6 @@ import {
   render,
   wait,
   fireEvent,
-  waitFor,
-  waitForElementToBeRemoved,
   screen
 } from "@testing-library/react";
 import App from "./App";
@@ -16,25 +14,52 @@ jest.mock("./apiService");
 
 describe("App", () => {
   const fakePosts = [
-    { id: 1, title: "first post" },
-    { id: 2, title: "second post" }
+    { id: 1, title: "first post", body: "this is the body"},
+    { id: 2, title: "second post", body: "this is the body" }
   ];
 
   getPosts.mockResolvedValue(fakePosts);
 
-  it("renders posts", async () => {
+  it("loads and posts", async () => {
     render(<App />);
 
-    expect(screen.getByText("There are no posts")).toBeInTheDocument();
+    expect(screen.getByText("Loading...")).toBeInTheDocument();
 
-    expect(await screen.findByText("There are no posts")).not.toBeInTheDocument();
+    expect(await screen.findByText("Loading...")).not.toBeInTheDocument();
 
     fakePosts.reduce((post) => {
       expect(screen.getByText(post.title)).toBeInTheDocument();
     });
 
-    expect(screen.getAllByRole("article")).toHaveLength(fakePosts.length);
 
     expect(getPosts).toHaveBeenCalledTimes(1);
+  });
+
+  it("allows searching for posts", async () => {
+    render(<App />);
+
+    expect(await screen.findAllByRole("article")).toHaveLength(fakePosts.length);
+
+    fireEvent.change(screen.getByLabelText("Search articles"), {target: {value: "second"}})
+
+    expect(screen.queryByText("first post")).not.toBeInTheDocument();
+    expect(screen.queryByText("second post")).toBeInTheDocument();
+
+    expect(screen.getAllByRole("article")).toHaveLength(1);
+  });
+
+  it("shows a message when no posts match criteria", async () => {
+    render(<App />);
+
+    expect(await screen.findAllByRole("article")).toHaveLength(fakePosts.length);
+
+    fireEvent.change(screen.getByLabelText("Search articles"), {target: {value: "no post matches this criteria"}})
+
+    expect(screen.getByText("We couldn't find any articles!")).toBeInTheDocument();
+
+    expect(screen.queryByText("first post")).not.toBeInTheDocument();
+    expect(screen.queryByText("second post")).not.toBeInTheDocument();
+
+    expect(screen.queryAllByRole("article")).toHaveLength(0);
   });
 });
