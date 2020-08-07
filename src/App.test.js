@@ -12,25 +12,25 @@ import { getPosts } from "./apiService.js";
 
 jest.mock("./apiService");
 
+const fakePosts = [
+  { id: 1, title: "first post", body: "this is the body"},
+  { id: 2, title: "second post", body: "this is the body" }
+];
+
+getPosts.mockResolvedValue(fakePosts);
+
+
 describe("App", () => {
-  const fakePosts = [
-    { id: 1, title: "first post", body: "this is the body"},
-    { id: 2, title: "second post", body: "this is the body" }
-  ];
-
-  getPosts.mockResolvedValue(fakePosts);
-
-  it("loads and posts", async () => {
+  it("loads the articles", async () => {
     render(<App />);
 
     expect(screen.getByText("Loading...")).toBeInTheDocument();
 
     expect(await screen.findByText("Loading...")).not.toBeInTheDocument();
 
-    fakePosts.reduce((post) => {
+    fakePosts.forEach((post) => {
       expect(screen.getByText(post.title)).toBeInTheDocument();
     });
-
 
     expect(getPosts).toHaveBeenCalledTimes(1);
   });

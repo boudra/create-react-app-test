@@ -12,7 +12,7 @@ import SearchBar from "./SearchBar";
 describe("SearchBar", () => {
 
   it("displays the right value", () => {
-    render(<SearchBar query={"the meaning of life"} />);
+    render(<SearchBar query={"the meaning of life"} onChange={null} />);
 
     expect(screen.getByDisplayValue("the meaning of life")).toBeInTheDocument();
   });
@@ -20,7 +20,7 @@ describe("SearchBar", () => {
   it("calls back when value changes", () => {
     const onChange = jest.fn();
 
-    render(<SearchBar onChange={onChange} />);
+    render(<SearchBar onChange={onChange} query="" />);
 
     fireEvent.change(screen.getByLabelText("Search articles"), {target: {value: "searching for something"}});
 
