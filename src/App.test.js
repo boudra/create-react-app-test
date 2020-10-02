@@ -19,7 +19,6 @@ const fakePosts = [
 
 getPosts.mockResolvedValue(fakePosts);
 
-
 describe("App", () => {
   it("loads the articles", async () => {
     render(<App />);

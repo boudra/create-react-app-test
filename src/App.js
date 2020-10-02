@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import { getPosts } from "./apiService.js";
 import SearchBar from "./SearchBar.js";
+import Header from "./Header.js";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -45,9 +46,7 @@ function App() {
 
   return (
     <div className="App">
-      <header className="app-header">
-        <h1>Articles</h1>
-      </header>
+      <Header/>
       {loading ? <p>Loading...</p> : viewPosts()}
     </div>
   );
