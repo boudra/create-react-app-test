@@ -5,7 +5,7 @@ exports[`renders correctly 1`] = `
   className="app-header"
 >
   <h1>
-    Articles
+    Something else
   </h1>
 </header>
 `;

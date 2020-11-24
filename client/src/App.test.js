@@ -21,15 +21,16 @@ getPosts.mockResolvedValue(fakePosts);
 
 describe("App", () => {
   it("loads the articles", async () => {
-    render(<App />);
+    const { container } = render(<App />);
+
+    // expect(container.querySelector("p").innerHTML).toBe("Loading...");
 
     expect(screen.getByText("Loading...")).toBeInTheDocument();
 
     expect(await screen.findByText("Loading...")).not.toBeInTheDocument();
 
-    fakePosts.forEach((post) => {
-      expect(screen.getByText(post.title)).toBeInTheDocument();
-    });
+    expect(screen.getByText("first post")).toBeInTheDocument();
+    expect(screen.getByText("second post")).toBeInTheDocument();
 
     expect(getPosts).toHaveBeenCalledTimes(1);
   });
@@ -39,7 +40,7 @@ describe("App", () => {
 
     expect(await screen.findAllByRole("article")).toHaveLength(fakePosts.length);
 
-    fireEvent.change(screen.getByLabelText("Search articles"), {target: {value: "second"}})
+    fireEvent.change(screen.getByPlaceholderText("Search articles"), {target: {value: "second"}})
 
     expect(screen.queryByText("first post")).not.toBeInTheDocument();
     expect(screen.queryByText("second post")).toBeInTheDocument();
